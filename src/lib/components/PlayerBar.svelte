@@ -62,6 +62,7 @@
     bind:duration
     bind:volume
     onended={nextTrack}
+    
   ></audio>
 
   <!-- Info Canción -->

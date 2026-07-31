@@ -1,11 +1,29 @@
 import { writable } from 'svelte/store';
 import type { Track, Album } from '$lib/types';
 
-// Stores reactivos
-export const favoriteTracks = writable<Track[]>([]);
-export const savedAlbums = writable<Album[]>([]);
+// Leer inicial de localStorage (solo en cliente)
+const initialFavorites: Track[] = typeof window !== 'undefined' 
+  ? JSON.parse(localStorage.getItem('gx_favorites') || '[]') 
+  : [];
 
-// Funciones utilitarias para alternar (toggle) canciones favoritas
+const initialSavedAlbums: Album[] = typeof window !== 'undefined' 
+  ? JSON.parse(localStorage.getItem('gx_saved_albums') || '[]') 
+  : [];
+
+export const favoriteTracks = writable<Track[]>(initialFavorites);
+export const savedAlbums = writable<Album[]>(initialSavedAlbums);
+
+// Guardar en localStorage cuando cambie el store
+if (typeof window !== 'undefined') {
+  favoriteTracks.subscribe((value) => {
+    localStorage.setItem('gx_favorites', JSON.stringify(value));
+  });
+
+  savedAlbums.subscribe((value) => {
+    localStorage.setItem('gx_saved_albums', JSON.stringify(value));
+  });
+}
+
 export function toggleFavoriteTrack(track: Track) {
   favoriteTracks.update((tracks) => {
     const exists = tracks.some((t) => t.id === track.id);
@@ -17,7 +35,6 @@ export function toggleFavoriteTrack(track: Track) {
   });
 }
 
-// Alternar álbumes guardados
 export function toggleSaveAlbum(album: Album) {
   savedAlbums.update((albums) => {
     const exists = albums.some((a) => a.id === album.id);
