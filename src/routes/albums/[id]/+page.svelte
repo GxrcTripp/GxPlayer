@@ -3,24 +3,28 @@
   import TrackCard from '$lib/components/TrackCard.svelte';
   import type { Track, Album } from '$lib/types';
   import { playTrack } from '$lib/stores/player';
+  import { savedAlbums, toggleSaveAlbum } from '$lib/stores/library';
 
-  // Svelte 5 runes: Recibimos data de los layouts superiores
   let { data } = $props();
 
-  // Obtenemos el ID del álbum desde los parámetros de la URL
   let albumId = $derived($page.params.id);
-
-  // Aseguramos arreglos seguros
   let tracks = $derived((data.tracks ?? []) as Track[]);
   let albums = $derived((data.albums ?? []) as Album[]);
 
-  // Buscamos el álbum y sus canciones correspondientes
   let currentAlbum = $derived(albums.find(a => String(a.id) === String(albumId)));
   let albumTracks = $derived(tracks.filter(t => String(t.albumId) === String(albumId) || String(t.album?.id) === String(albumId)));
 
+  let isSaved = $derived(currentAlbum ? $savedAlbums.some(a => a.id === currentAlbum.id) : false);
+
   function playAll() {
     if (albumTracks.length > 0) {
-      playTrack(albumTracks[0]);
+      playTrack(albumTracks[0], albumTracks);
+    }
+  }
+
+  function handleSaveAlbum() {
+    if (currentAlbum) {
+      toggleSaveAlbum(currentAlbum);
     }
   }
 </script>
@@ -52,7 +56,8 @@
           {currentAlbum.artist?.name ?? 'Varios Artistas'} • {albumTracks.length} {albumTracks.length === 1 ? 'canción' : 'canciones'}
         </p>
 
-        <div class="pt-2">
+        <!-- Botones de Acción Header -->
+        <div class="pt-2 flex flex-wrap items-center justify-center sm:justify-start gap-3">
           <button 
             onclick={playAll}
             disabled={albumTracks.length === 0}
@@ -60,6 +65,17 @@
           >
             <span class="material-symbols-outlined text-2xl font-black">play_arrow</span>
             Reproducir
+          </button>
+
+          <!-- Botón de Guardar en la Biblioteca -->
+          <button 
+            onclick={handleSaveAlbum}
+            class="bg-white/5 hover:bg-white/10 text-white border border-white/10 px-5 py-3 rounded-full font-bold flex items-center gap-2 transition cursor-pointer text-sm"
+          >
+            <span class="material-symbols-outlined text-xl {isSaved ? 'text-[#a078ff] fill-current' : ''}">
+              {isSaved ? 'bookmark' : 'bookmark_add'}
+            </span>
+            {isSaved ? 'Guardado' : 'Guardar álbum'}
           </button>
         </div>
       </div>
@@ -79,9 +95,8 @@
       {/if}
     </section>
   {:else}
-    <!-- Estado mientras carga o si no se encuentra -->
     <div class="py-20 text-center space-y-4">
-      <p class="text-neutral-400 text-lg">Cargando detalles del álbum o no fue encontrado...</p>
+      <p class="text-neutral-400 text-lg">Cargando detalles del álbum...</p>
       <a href="/" class="text-[#d0bcff] hover:underline font-bold text-sm">Volver al inicio</a>
     </div>
   {/if}
