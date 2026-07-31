@@ -7,7 +7,7 @@
 </script>
 
 <div class="h-screen w-screen bg-[#0D0F12] text-[#e2e2e6] flex flex-col overflow-hidden relative">
-  <!-- Área de Sidebar + Contenido Principal -->
+  <!-- Área de Sidebar + Contenido Principal de cada ruta -->
   <div class="flex flex-1 overflow-hidden pb-20">
     <Navbar />
 
@@ -16,6 +16,6 @@
     </main>
   </div>
 
-  <!-- Player Bar fijo abajo de extremo a extremo -->
+  <!-- Player Bar fijo abajo -->
   <PlayerBar />
 </div>

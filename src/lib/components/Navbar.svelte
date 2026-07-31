@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { page } from '$app/stores';
   let isCollapsed = $state(false);
 
   function toggleSidebar() {
@@ -6,10 +7,7 @@
   }
 </script>
 
-<aside 
-  class="h-full bg-[#111827]/60 backdrop-blur-xl border-r border-white/10 flex flex-col py-6 px-3 transition-all duration-300 z-30 relative {isCollapsed ? 'w-20' : 'w-60'}"
->
-<!-- Encabezado + Botón de Colapsar/Abatible -->
+<aside class="h-full bg-[#111827]/60 backdrop-blur-xl border-r border-white/10 flex flex-col py-6 px-3 transition-all duration-300 z-30 relative {isCollapsed ? 'w-20' : 'w-60'}">
   <div class="flex items-center justify-between mb-8 px-2 w-full">
     {#if !isCollapsed}
       <div>
@@ -18,51 +16,25 @@
       </div>
     {/if}
     
-    <button 
-      onclick={toggleSidebar}
-      class="p-2 text-neutral-400 hover:text-white hover:bg-white/5 rounded-lg transition {isCollapsed ? 'mx-auto' : 'ml-auto'}"
-      title={isCollapsed ? "Expandir menú" : "Colapsar menú"}
-    >
-      <span class="material-symbols-outlined">
-        {isCollapsed ? 'menu_open' : 'menu'}
-      </span>
+    <button onclick={toggleSidebar} class="p-2 text-neutral-400 hover:text-white hover:bg-white/5 rounded-lg transition {isCollapsed ? 'mx-auto' : 'ml-auto'}">
+      <span class="material-symbols-outlined">{isCollapsed ? 'menu_open' : 'menu'}</span>
     </button>
   </div>
 
-  <!-- Links con Íconos de Google -->
   <nav class="flex-1 space-y-2">
-    <a href="#" class="flex items-center gap-4 py-3 px-3 rounded-xl text-[#d0bcff] font-bold bg-white/5 transition-all">
+    <a href="/" class="flex items-center gap-4 py-3 px-3 rounded-xl font-bold transition-all {$page.url.pathname === '/' ? 'text-[#d0bcff] bg-white/5 border-r-2 border-[#a078ff]' : 'text-neutral-400 hover:text-white hover:bg-white/5'}">
       <span class="material-symbols-outlined text-xl">home</span>
-      {#if !isCollapsed}
-        <span class="text-sm truncate">Inicio</span>
-      {/if}
+      {#if !isCollapsed}<span class="text-sm truncate">Home</span>{/if}
     </a>
 
-    <a href="#" class="flex items-center gap-4 py-3 px-3 rounded-xl text-neutral-400 hover:text-white hover:bg-white/5 transition-all">
+    <a href="/explore" class="flex items-center gap-4 py-3 px-3 rounded-xl font-bold transition-all {$page.url.pathname.startsWith('/explore') ? 'text-[#d0bcff] bg-white/5 border-r-2 border-[#a078ff]' : 'text-neutral-400 hover:text-white hover:bg-white/5'}">
       <span class="material-symbols-outlined text-xl">explore</span>
-      {#if !isCollapsed}
-        <span class="text-sm truncate">Explorar</span>
-      {/if}
+      {#if !isCollapsed}<span class="text-sm truncate">Explore</span>{/if}
     </a>
 
-    <a href="#" class="flex items-center gap-4 py-3 px-3 rounded-xl text-neutral-400 hover:text-white hover:bg-white/5 transition-all">
+    <a href="/library" class="flex items-center gap-4 py-3 px-3 rounded-xl font-bold transition-all {$page.url.pathname.startsWith('/library') ? 'text-[#d0bcff] bg-white/5 border-r-2 border-[#a078ff]' : 'text-neutral-400 hover:text-white hover:bg-white/5'}">
       <span class="material-symbols-outlined text-xl">library_music</span>
-      {#if !isCollapsed}
-        <span class="text-sm truncate">Biblioteca</span>
-      {/if}
+      {#if !isCollapsed}<span class="text-sm truncate">Library</span>{/if}
     </a>
   </nav>
-
-  <!-- Usuario -->
-  <div class="mt-auto pt-4 border-t border-white/5 flex items-center gap-3">
-    <div class="w-9 h-9 rounded-full border border-purple-500/30 bg-neutral-800 flex items-center justify-center font-bold text-xs text-purple-300 flex-shrink-0">
-      GA
-    </div>
-    {#if !isCollapsed}
-      <div class="overflow-hidden">
-        <p class="text-xs font-bold text-white truncate">Gustavo</p>
-        <p class="text-[9px] text-purple-400 uppercase font-bold">Pro User</p>
-      </div>
-    {/if}
-  </div>
 </aside>
