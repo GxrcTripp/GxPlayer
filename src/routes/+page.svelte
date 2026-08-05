@@ -3,6 +3,7 @@
   import AlbumCard from '$lib/components/AlbumCard.svelte';
   import ArtistCard from '$lib/components/ArtistCard.svelte';
   import type { Track, Album, Artist } from '$lib/types';
+    import { fade } from 'svelte/transition';
 
   let { data } = $props();
 
@@ -11,7 +12,7 @@
   let artists = $derived(data.artists as Artist[]);
 </script>
 
-<div class="space-y-10">
+<div  transition:fade class="space-y-10">
   <!-- Artistas Top -->
   <section>
     <h3 class="text-xl font-bold text-white mb-6">Artistas Top</h3>
